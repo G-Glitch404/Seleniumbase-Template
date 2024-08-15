@@ -32,9 +32,10 @@ def retry(func, retries: int = 5, interval: int = 1, exceptions: tuple = __excep
         for _ in range(retries):
             try: return func(*args, **kwargs)
             except exceptions as e:
-                retry_logger.exception(f'function {func} failed with exception {e} retrying after interval')
+                retry_logger.exception(f'function {func.__name__} with args {args, kwargs} failed with exception {e} retrying after interval...')
             finally: time.sleep(interval)
-        return func(*args, **kwargs)  # if error keeps occurring, return it
+        retry_logger.exception(f'function {func.__name__} with args {args, kwargs} failed to execute.')
+        return False
 
     return wrapper
 

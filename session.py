@@ -9,7 +9,12 @@ from util.decorators import retry
 
 
 class Session(RequestsSession):
-    def __init__(self, proxy: str = None, user_agent: str = None) -> None:
+    def __init__(
+            self,
+            user_agent: str = "Mozilla/5 (Windows NT 10; Win64; x64) AppleWebKit/537 (KHTML, like Gecko)",
+            proxy: str = None,
+    ) -> None:
+        """ a custom session class that handles retrying and proxy settings and fingerprints. """
         super(Session, self).__init__()
         self.logger = Logger(logging.getLogger('Session'), {})
 
@@ -25,7 +30,7 @@ class Session(RequestsSession):
         time.sleep(1)
         response = super(Session, self).get(
             headers=self.headers, cookies=self.cookies,
-            timeout=10, impersonate="chrome110", *args, **kwargs
+            timeout=20, impersonate="chrome110", *args, **kwargs
         )
         if not response:
             self.logger.error('GET request failure')
