@@ -145,6 +145,20 @@ class SeleniumbaseTemplate:
 
         return True
 
+    def search_term(self, term_to_search: str, site_to_click: str, interval: int = 5) -> bool:
+        """
+        search a term on www.google.com and click on the relevant result.
+
+        :param term_to_search: term to search
+        :param site_to_click: site to click on
+        :param interval: interval between clicks in seconds
+
+        :rtype: bool
+        :return: True if action finished successfully else False
+        """
+        # self.driver.get('https://www.google.com/')
+        raise NotImplementedError('still on progress...')
+
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         self.driver.close()
         self.driver.quit()
