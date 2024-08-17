@@ -1,5 +1,4 @@
 import time
-import random
 import logging
 import keyboard
 import threading
@@ -9,7 +8,7 @@ from logger.logger import Logger
 from settings import selectors as se
 from settings import settings
 from util import decorators
-from util.utils import path
+from util.utils import path, wait
 
 from humancursor import WebCursor
 from seleniumbase import Driver
@@ -18,9 +17,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionBuilder
 
+from seleniumbase.undetected.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.wait import WebElement
 
 logger = Logger(logging.getLogger('Control'), {})
 for log in [
@@ -34,6 +33,7 @@ logger.debug("Control Initialized Successfully.")
 
 class SeleniumbaseTemplate:
     def __init__(self, user_data_dir_path: str, proxy: str = None) -> None:
+        self.stop_listeners: bool = False
         self.logger = Logger(logging.getLogger('SeleniumbaseTemplate'), {})
         self.driver = Driver(
             uc=True,
@@ -49,14 +49,15 @@ class SeleniumbaseTemplate:
             user_data_dir=user_data_dir_path,
         )
         threading.Thread(target=self.listener, args=('ctrl+esc', )).start()
+
         self.logger.debug('SeleniumbaseTemplate initialized successfully.')
 
-    def listener(self, button: str):
+    def listener(self, button: str) -> None:
         """
         keyboard listener to do an action if button was clicked.
         :param button: keyboard button to click
         """
-        while True:
+        while not self.stop_listeners:
             if keyboard.is_pressed(button):
                 match button:
                     case 'ctrl+m': pass  # add an event here
@@ -64,7 +65,9 @@ class SeleniumbaseTemplate:
                     case 'ctrl+esc':
                         self.driver.close()
                         self.driver.quit()
-            time.sleep(0.1)
+                        self.stop_listeners = True
+                        return
+            time.sleep(.05)
 
     @decorators.retry
     def find_element(self, selector: tuple[str, str], timeout: int = 20) -> WebElement:
@@ -137,9 +140,7 @@ class SeleniumbaseTemplate:
         for letter in text:
             chain.key_action.key_down(letter)
             chain.perform()
-
-            self.driver.sleep(random.choice([random.uniform(.01, .1)]) for _ in range(35))
-
+            wait(1)
             chain.key_action.key_up(letter)
             chain.perform()
 

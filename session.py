@@ -28,10 +28,7 @@ class Session(RequestsSession):
     def get(self, *args, **kwargs) -> Response:
         """ GET request with retry decorator """
         time.sleep(1)
-        response = super(Session, self).get(
-            headers=self.headers, cookies=self.cookies,
-            timeout=20, impersonate="chrome110", *args, **kwargs
-        )
+        response = super(Session, self).get(timeout=20, impersonate="chrome110", *args, **kwargs)
         if not response:
             self.logger.error('GET request failure')
             return Response()
@@ -41,10 +38,7 @@ class Session(RequestsSession):
     def post(self, *args, **kwargs) -> Response:
         """ POST request with retry decorator """
         time.sleep(1)
-        response = super(Session, self).post(
-            headers=self.headers, cookies=self.cookies,
-            timeout=10, impersonate="chrome110", *args, **kwargs
-        )
+        response = super(Session, self).post(timeout=20, impersonate="chrome110", *args, **kwargs)
         if not response:
             self.logger.error('POST request failure')
             return Response()

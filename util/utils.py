@@ -1,17 +1,27 @@
+import time
 import random
 import string
 import os
 
+wait = lambda x=1: time.sleep(rand_range(x))
 password = lambda: ''.join(
     random.choices(
         string.ascii_letters + string.digits + "@#$%&!",
         k=random.randint(8, 16),
     )
-)
+)  # generate a random password (8-16 characters long)
 
 
 def path(file_path: str) -> str:
-    """ converts a relative path to an absolute path """
+    """
+    converts a relative path to an absolute path
+
+    :param file_path: file path
+    :type file_path: str
+
+    :rtype: str
+    :return: an absolute path
+    """
     seperator = '\\' if 'nt' in os.name.lower() else '/'
     return os.path.join(
         seperator.join(
@@ -26,7 +36,15 @@ def path(file_path: str) -> str:
 
 
 def get_filename(file_path: str) -> str:
-    """ returns the filename from a file path """
+    """
+    returns the filename from a file path
+
+    :param file_path: file path
+    :type file_path: str
+
+    :rtype: str
+    :return: a filename
+    """
     if "/" in file_path:
         return file_path.split("/")[-1]
     elif "\\" in file_path:
@@ -36,6 +54,7 @@ def get_filename(file_path: str) -> str:
 
 
 def username() -> str:
+    """ generate a random username (lowercase, 20 characters max) """
     chance = lambda: random.choice(
         random.sample(range(20), k=10)
     ) % 2 == 0
@@ -53,3 +72,23 @@ def username() -> str:
             )
 
     return user.lower()[:20]
+
+
+def rand_range(num: int | float) -> float:
+    """
+    choose a random float between num - 1 and num + 1 intentionally made for time.sleep() to never stop in a pattern
+
+    :param num: int or float
+    :type num: int or float
+
+    :rtype: float
+    :return: a random float in the rango of num
+    """
+    return float(
+        str(random.choice(
+            [
+                round(random.uniform(num - 1, num + 1), 2)
+                for _ in range(100)
+            ]
+        )).replace("-", "")
+    )
