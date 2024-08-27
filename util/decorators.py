@@ -12,8 +12,8 @@ from selenium.common.exceptions import (
     ElementNotInteractableException,
 )
 
-catch_logger = Logger(logging.getLogger('ExceptionsHandler'), {})
-retry_logger = Logger(logging.getLogger('Retry'), {})
+catch_logger = Logger('ExceptionsHandler')
+retry_logger = Logger('Retry')
 __exceptions = (
     Exception,
     json.decoder.JSONDecodeError,

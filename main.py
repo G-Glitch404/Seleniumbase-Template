@@ -1,5 +1,4 @@
 import time
-import logging
 import keyboard
 import threading
 
@@ -21,20 +20,14 @@ from seleniumbase.undetected.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
-logger = Logger(logging.getLogger('Control'), {})
-for log in [
-    "Control",
-    "Session",
-    "ExceptionsHandler",
-    "Retry"]:
-    logging.getLogger(log).setLevel(settings["DEBUGGING_LEVEL"])
+logger = Logger('Control')
 logger.debug("Control Initialized Successfully.")
 
 
 class SeleniumbaseTemplate:
     def __init__(self, user_data_dir_path: str, proxy: str = None) -> None:
         self.stop_listeners: bool = False
-        self.logger = Logger(logging.getLogger('SeleniumbaseTemplate'), {})
+        self.logger = Logger('SeleniumbaseTemplate')
         self.driver = Driver(
             uc=True,
             undetectable=True,
@@ -80,9 +73,12 @@ class SeleniumbaseTemplate:
         :rtype: WebElement
         :return: the element after finding it or False if not found after 5 retries
         """
-        return WebDriverWait(self.driver, timeout).until(
-            ec.presence_of_element_located(selector)
-        )
+        if isinstance(selector, WebElement):
+            return selector
+        else:
+            return WebDriverWait(self.driver, timeout).until(
+                ec.presence_of_element_located(selector)
+            )
 
     @decorators.retry
     def click(self, element: tuple[str, str] | WebElement, timeout: int = 20) -> bool:

@@ -12,18 +12,10 @@ password = lambda: ''.join(
 )  # generate a random password (8-16 characters long)
 
 
-def path(file_path: str) -> str:
-    """
-    converts a relative path to an absolute path
-
-    :param file_path: file path
-    :type file_path: str
-
-    :rtype: str
-    :return: an absolute path
-    """
+def path(file_path: str, secondary_path: str = None) -> str:
+    """ converts a relative path to an absolute path """
     seperator = '\\' if 'nt' in os.name.lower() else '/'
-    return os.path.join(
+    file = os.path.join(
         seperator.join(
             os.path.realpath(
                 os.path.join(
@@ -33,18 +25,11 @@ def path(file_path: str) -> str:
             ).split(seperator)[:-1]),  # remove the current folder from path
         file_path
     )
+    return file if secondary_path is None else os.path.join(file, secondary_path)
 
 
 def get_filename(file_path: str) -> str:
-    """
-    returns the filename from a file path
-
-    :param file_path: file path
-    :type file_path: str
-
-    :rtype: str
-    :return: a filename
-    """
+    """ returns the filename from a file path """
     if "/" in file_path:
         return file_path.split("/")[-1]
     elif "\\" in file_path:

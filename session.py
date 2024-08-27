@@ -16,7 +16,7 @@ class Session(RequestsSession):
     ) -> None:
         """ a custom session class that handles retrying and proxy settings and fingerprints. """
         super(Session, self).__init__()
-        self.logger = Logger(logging.getLogger('Session'), {})
+        self.logger = Logger('Session')
 
         if user_agent: self.headers.update({"User-Agent": user_agent})
         self.get('https://www.google.com/')  # we add some cookies so the session is not empty
